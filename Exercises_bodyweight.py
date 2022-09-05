@@ -19,10 +19,10 @@ warnings.filterwarnings('ignore')
 """
 Backlog items:
     Add a menu for file loading, user config and general help
+    Read config from JSON
     Better countdown sounds
     Use different sets, including rep based
     Record results
-    Read config from JSON
     Play music during exercise
         Longer-term:
             Make it a web-based application
@@ -40,7 +40,8 @@ Credits
 
 """
 
-app_version_number = '1.1.0.-rc'
+app_version_number = '1.1.1.= alpha'
+# Version number using formal Semantic Versionning numbering as per https://semver.org/
 
 # create initial root windows properties
 root = tk.Tk()
@@ -48,6 +49,9 @@ root.title("Exercise series")
 root.configure(bg='grey')
 root.iconbitmap('Fit_icon.ico')
 root.minsize(200,100)
+
+# User configuration initialization
+my_exercise_file_path = 'Exercises_sample.xlsx' # default path using the included sample workbook in the same directory
 
 # function to pop out the application version
 def about_app():
@@ -57,12 +61,41 @@ def about_app():
 def message_copyright():
     showinfo(message = 'Copyright 2022, Olivier Germain, All rights reserved')
 
+# function to get file path by popping a new window and getting its resulting entry back
+def file_path():
+    path_entry_window = tk.Toplevel()
+    path_entry_window.title("Entry")
+    path_entry_window.geometry('400x200')
+    
+    def get_text():
+        my_exercise_file_path = my_entry.get()
+        path_entry_window.destroy()
+        
+    #Initialize a Label to display the User Input
+    label=tk.Label(path_entry_window, text="Enter the full path of where your exercise file is located", font=('Arial, 10'))
+    label.pack(padx = 5, pady = 5)
+
+    #Create an Entry widget to accept User Input
+    my_entry= tk.Entry(path_entry_window, width= 40)
+    my_entry.focus_set()
+    my_entry.pack()
+
+    #Create a Button to validate Entry Widget
+    ttk.Button(path_entry_window, text= "Okay",width= 20, command= get_text).pack(pady=20)
+
+
 # create the menu bar on the root window
 menubar = tk.Menu(root)
 root.config(menu=menubar)
 file_menu = tk.Menu(
     menubar,
     tearoff=0
+)
+
+# add file path menu item
+file_menu.add_command(
+    label='File path',
+    command=file_path
 )
 
 # add Exit menu item
@@ -99,7 +132,7 @@ menubar.add_cascade(
 )
 
 # read excel, extracts the unique types of exercises
-exodatasheet = pd.read_excel("Exercises.xlsx")
+exodatasheet = pd.read_excel(my_exercise_file_path)
 exo_type_list = exodatasheet['Type'].unique()
 exo_type_qty = len(exo_type_list)
 # extends the root window to fit contents
