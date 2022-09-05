@@ -18,14 +18,13 @@ warnings.filterwarnings('ignore')
 
 """
 Backlog items:
-    Add a menu for file loading, user config and help
+    Add a menu for file loading, user config and general help
     Better countdown sounds
     Use different sets, including rep based
     Record results
     Read config from JSON
     Play music during exercise
         Longer-term:
-            Publish on GitHub
             Make it a web-based application
             Try .NetCore...
 """
@@ -41,12 +40,11 @@ Credits
 
 """
 
-app_version_number = '1.0.0.'
+app_version_number = '1.1.0.-rc'
 
 # create initial root windows properties
 root = tk.Tk()
 root.title("Exercise series")
-root.geometry("395x760+2121+150")
 root.configure(bg='grey')
 root.iconbitmap('Fit_icon.ico')
 root.minsize(200,100)
@@ -103,6 +101,10 @@ menubar.add_cascade(
 # read excel, extracts the unique types of exercises
 exodatasheet = pd.read_excel("Exercises.xlsx")
 exo_type_list = exodatasheet['Type'].unique()
+exo_type_qty = len(exo_type_list)
+# extends the root window to fit contents
+root_geometry = '395x'+str(670+exo_type_qty*20)+'+2121+150'
+root.geometry(root_geometry)
 # Creates a dictionary object to be able to select which exercise type is of interest
 selected = [tk.StringVar(value ='1') for ex in exo_type_list] # with value = 1, all check boxes will be pre-ticked
 exo_select = {ex : '1' for ex in exo_type_list} # and the preset value is also in the dico
