@@ -13,6 +13,8 @@ from functools import partial
 import numpy as np
 from numpy import random
 import warnings
+import json
+import os
 
 warnings.filterwarnings('ignore')
 
@@ -51,7 +53,8 @@ root.iconbitmap('Fit_icon.ico')
 root.minsize(200,100)
 
 # User configuration initialization
-my_exercise_file_path = 'Exercises_sample.xlsx' # default path using the included sample workbook in the same directory
+my_config = pd.read_csv('Configtest.csv')
+exercise_file_path = my_config['Exercise_Path'][0]
 
 # function to pop out the application version
 def about_app():
@@ -69,6 +72,11 @@ def file_path():
     
     def get_text():
         my_exercise_file_path = my_entry.get()
+        my_config['Exercise_Path'][0] = my_exercise_file_path
+        if os.path.exists("Configtest.csv"):
+            os.remove("Configtest.csv")
+        my_config.to_csv("Configtest.csv")
+        root.mainloop()
         path_entry_window.destroy()
         
     #Initialize a Label to display the User Input
@@ -132,7 +140,11 @@ menubar.add_cascade(
 )
 
 # read excel, extracts the unique types of exercises
-exodatasheet = pd.read_excel(my_exercise_file_path)
+# if my_exercise_file_path == '':
+#     exercise_file_path = default_exercise_file_path
+# else:
+#     exercise_file_path = my_exercise_file_path
+exodatasheet = pd.read_excel(exercise_file_path)
 exo_type_list = exodatasheet['Type'].unique()
 exo_type_qty = len(exo_type_list)
 # extends the root window to fit contents
