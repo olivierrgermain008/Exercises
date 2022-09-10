@@ -68,7 +68,7 @@ def message_copyright():
 def file_path():
     path_entry_window = tk.Toplevel()
     path_entry_window.title("Entry")
-    path_entry_window.geometry('400x200')
+    path_entry_window.geometry('400x200+2200+100')
     
     def get_text():
         my_exercise_file_path = my_entry.get()
@@ -76,8 +76,9 @@ def file_path():
         if os.path.exists("Configtest.csv"):
             os.remove("Configtest.csv")
         my_config.to_csv("Configtest.csv")
-        root.mainloop()
+        popcanvas.destroy()
         path_entry_window.destroy()
+        root.update()
         
     #Initialize a Label to display the User Input
     label=tk.Label(path_entry_window, text="Enter the full path of where your exercise file is located", font=('Arial, 10'))
@@ -139,11 +140,6 @@ menubar.add_cascade(
     menu=help_menu
 )
 
-# read excel, extracts the unique types of exercises
-# if my_exercise_file_path == '':
-#     exercise_file_path = default_exercise_file_path
-# else:
-#     exercise_file_path = my_exercise_file_path
 exodatasheet = pd.read_excel(exercise_file_path)
 exo_type_list = exodatasheet['Type'].unique()
 exo_type_qty = len(exo_type_list)
