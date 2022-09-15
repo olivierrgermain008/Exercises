@@ -20,8 +20,9 @@ warnings.filterwarnings('ignore')
 
 """
 Backlog items:
+    Show expected duration before start (plus total countdown / end time?)
     Add a menu for file loading, user config and general help
-    Read config from JSON
+    Read config from JSON / CSV
     Better countdown sounds
     Use different sets, including rep based
     Record results
@@ -281,6 +282,7 @@ def config_countdown():
     while number_exo > len(exo_indexed_for_run):
         exo_indexed_for_run.extend(exo_indexed_for_run)
     exo_indexed_for_run = exo_indexed_for_run[0:number_exo]
+    exo_left = number_exo+1
 
 # clean root window for the exercises and resize
     subttl1.destroy()
@@ -315,6 +317,12 @@ def config_countdown():
         exercise_name_display = ttk.Label(root, text = result(exo)[0], font = ("Arial", 80), background = "grey")
         exercise_name_display.place (relx = 0.9, rely = 0.02, anchor = 'ne')
         root.update()
+        
+        # create and place remaining number of exercises label at the bottom
+        exo_left-=1
+        label2 = tk.Label(root, text = f'Remaining exercise{"s" if exo_left > 1 else ""}: {exo_left}', bg = 'grey', font = ('Arial', 64), fg = 'white')
+        label2.place(relx = 0.4, rely = 0.85, anchor = 'nw')
+       
         # create and place "ready, set, go" countdown
         count_display = ttk.Label(root, text = "Ready...", font = ("Arial", 100), background = "grey")
         count_display.place(relx = 0.75, rely = 0.25, anchor = 'nw')
@@ -346,6 +354,7 @@ def config_countdown():
             sec_count_display.destroy()
         label1.destroy()
         exercise_name_display.destroy()
+        label2.destroy()
     #end of count
     root.destroy()
     messagebox.showinfo("Time is up", "Enough for today")
