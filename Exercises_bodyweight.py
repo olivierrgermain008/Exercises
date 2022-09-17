@@ -28,9 +28,7 @@ Backlog items:
         Longer-term:
             Make it a web-based application
             Try .Net core...
-"""
-
-"""
+ 
 Credits
     Basic reference information about tkinter was found at:
         https://pythonistaplanet.com/how-to-create-a-desktop-application-using-python/
