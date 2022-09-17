@@ -22,7 +22,6 @@ warnings.filterwarnings('ignore')
 Backlog items:
     Show expected duration before start (plus total countdown / end time?)
     Add a menu for file loading, user config and general help
-    Read config from JSON / CSV
     Better countdown sounds
     Use different sets, including rep based
     Record results
@@ -43,7 +42,7 @@ Credits
 
 """
 
-app_version_number = '1.1.1.= alpha'
+app_version_number = '1.1.2.'
 # Version number using formal Semantic Versionning numbering as per https://semver.org/
 
 # create initial root windows properties
@@ -77,9 +76,11 @@ def file_path():
         if os.path.exists("Configtest.csv"):
             os.remove("Configtest.csv")
         my_config.to_csv("Configtest.csv")
-        popcanvas.destroy()
         path_entry_window.destroy()
-        root.update()
+        if messagebox.askyesno(
+            title = 'Attention', 
+            message ='You must close and restart the application for the changes to take effect. Do you want to restart now?'):
+                root.destroy()
         
     #Initialize a Label to display the User Input
     label=tk.Label(path_entry_window, text="Enter the full path of where your exercise file is located", font=('Arial, 10'))
