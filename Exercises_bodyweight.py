@@ -20,15 +20,14 @@ warnings.filterwarnings('ignore')
 
 """
 Backlog items:
-    Show expected duration before start (plus total countdown / end time?)
     Add a menu for file loading, user config and general help
     Better countdown sounds
     Use different sets, including rep based
-    Record results
+        Record results
     Play music during exercise
         Longer-term:
             Make it a web-based application
-            Try .NetCore...
+            Try .Net core...
 """
 
 """
@@ -79,7 +78,7 @@ def file_path():
         path_entry_window.destroy()
         if messagebox.askyesno(
             title = 'Attention', 
-            message ='You must close and restart the application for the changes to take effect. Do you want to restart now?'):
+            message ='You must close and restart the application for the changes to take effect. Do you want to close now?'):
                 root.destroy()
         
     #Initialize a Label to display the User Input
@@ -94,6 +93,20 @@ def file_path():
     #Create a Button to validate Entry Widget
     ttk.Button(path_entry_window, text= "Okay",width= 20, command= get_text).pack(pady=20)
 
+# function to convert a time in integer second into string h:m:s
+def convert_sec(second_d):
+    time_display =''
+    if second_d >3600:
+        hour_d = int(second_d/3600)
+        second_d -= hour_d*3600
+        time_display = time_display + str(hour_d)+'h '
+    if second_d > 60:
+        minutes_d = int(second_d/60)
+        second_d -= 60 * minutes_d
+        time_display = time_display + str(minutes_d)+'m '
+    time_display = time_display + str(second_d)+('s')
+    return(time_display)
+    
 
 # create the menu bar on the root window
 menubar = tk.Menu(root)
@@ -265,7 +278,7 @@ def config_countdown():
     elif selected_duration.get() != '':
         # compute number of exercises for duration choice
         my_selected_duration = np.round(int(selected_duration.get())*60,0)
-        number_exo = int(my_selected_duration/(pause_ready+pause_set+countdown_time))
+        number_exo = int(my_selected_duration/(pause_ready+pause_set+countdown_time+1))
     else:
     # compute number of exercises for fixed number choice
         number_exo_res = selected_number_of_exos.get()
@@ -284,7 +297,7 @@ def config_countdown():
         exo_indexed_for_run.extend(exo_indexed_for_run)
     exo_indexed_for_run = exo_indexed_for_run[0:number_exo]
     exo_left = number_exo+1
-
+    
 # clean root window for the exercises and resize
     subttl1.destroy()
     vertical_scrollbar_root.destroy()
@@ -321,9 +334,14 @@ def config_countdown():
         
         # create and place remaining number of exercises label at the bottom
         exo_left-=1
-        label2 = tk.Label(root, text = f'Remaining exercise{"s" if exo_left > 1 else ""}: {exo_left}', bg = 'grey', font = ('Arial', 64), fg = 'white')
-        label2.place(relx = 0.4, rely = 0.85, anchor = 'nw')
-       
+        remaining_duration = exo_left*(countdown_time+pause_ready+pause_set+1)
+        '''
+        Convert duration here
+        '''
+        label2 = tk.Label(root, text = f'Remaining exercise{"s" if exo_left > 1 else ""}: {exo_left}.', bg = 'grey', font = ('Arial', 64), fg = 'white')
+        label2.place(relx = 0.4, rely = 0.75, anchor = 'nw')
+        label3 = tk.Label(root, text = f'Total remaining time {convert_sec(remaining_duration)}.', bg = 'grey', font = ('Arial', 64), fg = 'white')
+        label3.place(relx = 0.25, rely = 0.85, anchor = 'nw')
         # create and place "ready, set, go" countdown
         count_display = ttk.Label(root, text = "Ready...", font = ("Arial", 100), background = "grey")
         count_display.place(relx = 0.75, rely = 0.25, anchor = 'nw')
@@ -356,6 +374,7 @@ def config_countdown():
         label1.destroy()
         exercise_name_display.destroy()
         label2.destroy()
+        label3.destroy()
     #end of count
     root.destroy()
     messagebox.showinfo("Time is up", "Enough for today")
